@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teaching Job Application Tracker</title>
+    <title>Job Applications Tracker</title>
     <style>
         * {
             margin: 0;
@@ -11,305 +11,419 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            padding: 30px 20px;
             min-height: 100vh;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
             overflow: hidden;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
-            padding: 30px;
-            text-align: center;
+            padding: 40px 40px;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
         .header p {
-            opacity: 0.9;
+            opacity: 0.95;
+            font-size: 15px;
+            font-weight: 400;
+        }
+        .save-indicator {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 14px;
+            font-weight: 500;
+        }
+        .save-indicator.saved {
+            background: #10b981;
         }
         .controls {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
+            padding: 30px 40px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .btn {
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.3s;
-            margin-right: 10px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         .btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
-        .btn-success {
-            background: #28a745;
+        .btn:active {
+            transform: translateY(0);
         }
-        .btn-success:hover {
-            background: #218838;
+        .btn-add {
+            background: #10b981;
+        }
+        .btn-add:hover {
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .btn-save {
+            background: #8b5cf6;
+        }
+        .btn-save:hover {
+            background: #7c3aed;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        .btn-download {
+            background: #0891b2;
+        }
+        .btn-download:hover {
+            background: #0e7490;
+            box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
         }
         .table-container {
-            padding: 30px;
+            padding: 40px;
             overflow-x: auto;
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: white;
         }
         thead {
-            background: #667eea;
-            color: white;
+            background: #f9fafb;
         }
         th {
-            padding: 15px;
+            padding: 16px 20px;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            color: #6b7280;
+            border-bottom: 2px solid #e5e7eb;
         }
         td {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f3f4f6;
             font-size: 14px;
+            color: #374151;
         }
-        tr:hover {
-            background: #f8f9fa;
+        tbody tr {
+            transition: all 0.2s;
         }
-        .status {
-            padding: 6px 12px;
-            border-radius: 20px;
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             display: inline-block;
+            text-transform: capitalize;
         }
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .status-applied {
-            background: #d1ecf1;
-            color: #0c5460;
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-        .status-responded {
-            background: #d4edda;
-            color: #155724;
+        select option[value="pending"] {
+            color: #f59e0b;
+        }
+        select option[value="applied"] {
+            color: #3b82f6;
+        }
+        select option[value="responded"] {
+            color: #10b981;
         }
         .link {
-            color: #667eea;
+            color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
+            transition: all 0.2s;
         }
         .link:hover {
+            color: #2563eb;
             text-decoration: underline;
         }
-        input[type="text"], input[type="date"], select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 13px;
+        [contenteditable="true"] {
+            cursor: text;
+            transition: all 0.2s;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
-        .editable {
-            cursor: pointer;
+        [contenteditable="true"]:hover {
+            background: #f9fafb;
+        }
+        [contenteditable="true"]:focus {
+            outline: 2px solid #3b82f6;
+            background: #eff6ff;
         }
         .delete-btn {
-            background: #dc3545;
+            background: #ef4444;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
         }
         .delete-btn:hover {
-            background: #c82333;
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
         .summary {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-top: 2px solid #e9ecef;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
         }
-        .summary-item {
-            text-align: center;
+        .summary-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
         .summary-number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
         }
         .summary-label {
-            font-size: 14px;
-            color: #6c757d;
-            margin-top: 5px;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .icon {
+            font-size: 16px;
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .controls {
+                padding: 20px;
+            }
+            .table-container {
+                padding: 20px;
+            }
+            .summary {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Teaching Job Application Tracker</h1>
-            <p>Muhammad Sultan Ul Arifeen - Track all your teaching applications</p>
+            <div class="header-content">
+                <div>
+                    <h1>📋 Job Applications Tracker</h1>
+                    <p>Muhammad Sultan Ul Arifeen - Professional Application Management System</p>
+                </div>
+                <div class="save-indicator" id="saveIndicator">
+                    <span id="saveStatus">All changes saved</span>
+                </div>
+            </div>
         </div>
         
         <div class="controls">
-            <button class="btn" onclick="addRow()">+ Add New Application</button>
-            <button class="btn btn-success" onclick="downloadExcel()">📥 Download Excel</button>
+            <button class="btn btn-add" onclick="addRow()">
+                <span class="icon">+</span> Add Application
+            </button>
+            <button class="btn btn-save" onclick="saveData()">
+                <span class="icon">💾</span> Save Changes
+            </button>
+            <button class="btn btn-download" onclick="downloadExcel()">
+                <span class="icon">📥</span> Export to Excel
+            </button>
         </div>
 
         <div class="table-container">
             <table id="applicationTable">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Website/Platform Name</th>
-                        <th>Website Link</th>
-                        <th>Date Applied</th>
-                        <th>Status</th>
+                        <th style="width: 60px;">No.</th>
+                        <th style="width: 200px;">Platform Name</th>
+                        <th style="width: 250px;">Website Link</th>
+                        <th style="width: 130px;">Date Applied</th>
+                        <th style="width: 150px;">Status</th>
                         <th>Notes</th>
-                        <th>Action</th>
+                        <th style="width: 100px;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     <tr>
                         <td>1</td>
-                        <td>TutorBees</td>
-                        <td><a href="https://tutorbees.pk" target="_blank" class="link">tutorbees.pk</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable">TutorBees</td>
+                        <td contenteditable="true" class="editable"><a href="https://tutorbees.pk" target="_blank" class="link">tutorbees.pk</a></td>
+                        <td contenteditable="true" class="editable">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending">Pending</option>
-                                <option value="applied" selected>Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending">⏳ Pending</option>
+                                <option value="applied" selected>✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">Registered as tutor</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Registered as tutor</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td>Seekooh</td>
-                        <td><a href="https://seekooh.com" target="_blank" class="link">seekooh.com</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable">Seekooh</td>
+                        <td contenteditable="true" class="editable"><a href="https://seekooh.com" target="_blank" class="link">seekooh.com</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending">Pending</option>
-                                <option value="applied" selected>Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending">⏳ Pending</option>
+                                <option value="applied" selected>✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">Profile created</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Profile created</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>3</td>
-                        <td>foriEDU</td>
-                        <td><a href="https://foriedu.com" target="_blank" class="link">foriedu.com</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">foriEDU</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()"><a href="https://foriedu.com" target="_blank" class="link">foriedu.com</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">To apply</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">To apply</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>4</td>
-                        <td>eTutors.pk</td>
-                        <td><a href="https://etutors.pk" target="_blank" class="link">etutors.pk</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">eTutors.pk</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()"><a href="https://etutors.pk" target="_blank" class="link">etutors.pk</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">To apply</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">To apply</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>5</td>
-                        <td>Zahid Home Tuition</td>
-                        <td><a href="https://zahidhometuition.com" target="_blank" class="link">zahidhometuition.com</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Zahid Home Tuition</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()"><a href="https://zahidhometuition.com" target="_blank" class="link">zahidhometuition.com</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">To apply</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">To apply</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>6</td>
-                        <td>Pak Home Tutor</td>
-                        <td><a href="https://pakhometutor.com" target="_blank" class="link">pakhometutor.com</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Pak Home Tutor</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()"><a href="https://pakhometutor.com" target="_blank" class="link">pakhometutor.com</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">To apply</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">To apply</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>7</td>
-                        <td>iCares Learning Hub</td>
-                        <td><a href="#" target="_blank" class="link">Contact: Local</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">iCares Learning Hub</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Local - Wah Cantt</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">Based in Wah Cantt</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Based in Wah Cantt</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                     <tr>
                         <td>8</td>
-                        <td>Preply (International)</td>
-                        <td><a href="https://preply.com" target="_blank" class="link">preply.com</a></td>
-                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">Preply</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()"><a href="https://preply.com" target="_blank" class="link">preply.com</a></td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">2025-11-29</td>
                         <td>
-                            <select onchange="updateStatus(this)">
-                                <option value="pending" selected>Pending</option>
-                                <option value="applied">Applied</option>
-                                <option value="responded">Responded</option>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" selected>⏳ Pending</option>
+                                <option value="applied">✅ Applied</option>
+                                <option value="responded">✉️ Responded</option>
                             </select>
                         </td>
-                        <td contenteditable="true" class="editable">For language teaching</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">International platform</td>
                         <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
                 </tbody>
@@ -317,19 +431,19 @@
         </div>
 
         <div class="summary">
-            <div class="summary-item">
+            <div class="summary-card">
                 <div class="summary-number" id="totalApps">8</div>
                 <div class="summary-label">Total Applications</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-card">
                 <div class="summary-number" id="appliedCount">2</div>
                 <div class="summary-label">Applied</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-card">
                 <div class="summary-number" id="pendingCount">6</div>
                 <div class="summary-label">Pending</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-card">
                 <div class="summary-number" id="respondedCount">0</div>
                 <div class="summary-label">Responded</div>
             </div>
@@ -339,6 +453,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         let rowCount = 8;
+        let unsavedChanges = false;
+
+        function markUnsaved() {
+            unsavedChanges = true;
+            document.getElementById('saveStatus').textContent = 'Unsaved changes';
+            document.getElementById('saveIndicator').classList.remove('saved');
+        }
+
+        function markSaved() {
+            unsavedChanges = false;
+            document.getElementById('saveStatus').textContent = 'All changes saved ✓';
+            document.getElementById('saveIndicator').classList.add('saved');
+            setTimeout(() => {
+                document.getElementById('saveIndicator').classList.remove('saved');
+                document.getElementById('saveStatus').textContent = 'All changes saved';
+            }, 2000);
+        }
+
+        function saveData() {
+            const tableData = [];
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach(row => {
+                const rowData = {
+                    no: row.cells[0].textContent,
+                    platform: row.cells[1].textContent,
+                    website: row.cells[2].textContent,
+                    date: row.cells[3].textContent,
+                    status: row.cells[4].querySelector('select').value,
+                    notes: row.cells[5].textContent
+                };
+                tableData.push(rowData);
+            });
+            
+            localStorage.setItem('jobApplications', JSON.stringify(tableData));
+            markSaved();
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('jobApplications');
+            if (savedData) {
+                const tableData = JSON.parse(savedData);
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
+                
+                tableData.forEach((data, index) => {
+                    const newRow = tableBody.insertRow();
+                    newRow.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">${data.platform}</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">${data.website}</td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">${data.date}</td>
+                        <td>
+                            <select onchange="updateStatus(this); markUnsaved()">
+                                <option value="pending" ${data.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                                <option value="applied" ${data.status === 'applied' ? 'selected' : ''}>✅ Applied</option>
+                                <option value="responded" ${data.status === 'responded' ? 'selected' : ''}>✉️ Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable" oninput="markUnsaved()">${data.notes}</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    `;
+                });
+                
+                rowCount = tableData.length;
+                updateSummary();
+            }
+        }
 
         function addRow() {
             rowCount++;
@@ -347,20 +529,21 @@
             
             newRow.innerHTML = `
                 <td>${rowCount}</td>
-                <td contenteditable="true" class="editable">Enter Platform Name</td>
-                <td contenteditable="true" class="editable">Enter Website URL</td>
-                <td contenteditable="true" class="editable">${new Date().toISOString().split('T')[0]}</td>
+                <td contenteditable="true" class="editable" oninput="markUnsaved()">Enter Platform Name</td>
+                <td contenteditable="true" class="editable" oninput="markUnsaved()">Enter Website URL</td>
+                <td contenteditable="true" class="editable" oninput="markUnsaved()">${new Date().toISOString().split('T')[0]}</td>
                 <td>
-                    <select onchange="updateStatus(this)">
-                        <option value="pending" selected>Pending</option>
-                        <option value="applied">Applied</option>
-                        <option value="responded">Responded</option>
+                    <select onchange="updateStatus(this); markUnsaved()">
+                        <option value="pending" selected>⏳ Pending</option>
+                        <option value="applied">✅ Applied</option>
+                        <option value="responded">✉️ Responded</option>
                     </select>
                 </td>
-                <td contenteditable="true" class="editable">Add notes here</td>
+                <td contenteditable="true" class="editable" oninput="markUnsaved()">Add notes here</td>
                 <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
             `;
             updateSummary();
+            markUnsaved();
         }
 
         function deleteRow(btn) {
@@ -369,6 +552,7 @@
                 row.parentNode.removeChild(row);
                 updateRowNumbers();
                 updateSummary();
+                markUnsaved();
             }
         }
 
@@ -405,7 +589,6 @@
             const table = document.getElementById('applicationTable');
             const wb = XLSX.utils.book_new();
             
-            // Get data from table
             const data = [];
             const headers = ['No.', 'Platform Name', 'Website Link', 'Date Applied', 'Status', 'Notes'];
             data.push(headers);
@@ -423,22 +606,39 @@
             });
             
             const ws = XLSX.utils.aoa_to_sheet(data);
-            
-            // Set column widths
             ws['!cols'] = [
                 {wch: 5},
                 {wch: 25},
-                {wch: 30},
+                {wch: 35},
                 {wch: 15},
                 {wch: 12},
-                {wch: 30}
+                {wch: 35}
             ];
             
-            XLSX.utils.book_append_sheet(wb, ws, 'Applications');
-            XLSX.writeFile(wb, 'Teaching_Job_Applications_Muhammad_Sultan.xlsx');
+            XLSX.utils.book_append_sheet(wb, ws, 'Job Applications');
+            XLSX.writeFile(wb, 'Job_Applications_Muhammad_Sultan_' + new Date().toISOString().split('T')[0] + '.xlsx');
         }
 
-        // Initialize summary on page load
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            if (unsavedChanges) {
+                saveData();
+            }
+        }, 30000);
+
+        // Load data on page load
+        window.addEventListener('load', () => {
+            loadData();
+        });
+
+        // Warn before leaving if unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (unsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
         updateSummary();
     </script>
 </body>
