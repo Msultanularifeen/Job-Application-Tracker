@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teaching Job Application Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        thead {
+            background: #667eea;
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-applied {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-responded {
+            background: #d4edda;
+            color: #155724;
+        }
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        .editable {
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+        .summary-item {
+            text-align: center;
+        }
+        .summary-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .summary-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Teaching Job Application Tracker</h1>
+            <p>Muhammad Sultan Ul Arifeen - Track all your teaching applications</p>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="addRow()">+ Add New Application</button>
+            <button class="btn btn-success" onclick="downloadExcel()">📥 Download Excel</button>
+        </div>
+
+        <div class="table-container">
+            <table id="applicationTable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Website/Platform Name</th>
+                        <th>Website Link</th>
+                        <th>Date Applied</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>1</td>
+                        <td>TutorBees</td>
+                        <td><a href="https://tutorbees.pk" target="_blank" class="link">tutorbees.pk</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending">Pending</option>
+                                <option value="applied" selected>Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">Registered as tutor</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Seekooh</td>
+                        <td><a href="https://seekooh.com" target="_blank" class="link">seekooh.com</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending">Pending</option>
+                                <option value="applied" selected>Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">Profile created</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>foriEDU</td>
+                        <td><a href="https://foriedu.com" target="_blank" class="link">foriedu.com</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">To apply</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>eTutors.pk</td>
+                        <td><a href="https://etutors.pk" target="_blank" class="link">etutors.pk</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">To apply</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Zahid Home Tuition</td>
+                        <td><a href="https://zahidhometuition.com" target="_blank" class="link">zahidhometuition.com</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">To apply</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Pak Home Tutor</td>
+                        <td><a href="https://pakhometutor.com" target="_blank" class="link">pakhometutor.com</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">To apply</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>iCares Learning Hub</td>
+                        <td><a href="#" target="_blank" class="link">Contact: Local</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">Based in Wah Cantt</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Preply (International)</td>
+                        <td><a href="https://preply.com" target="_blank" class="link">preply.com</a></td>
+                        <td contenteditable="true" class="editable">2024-11-29</td>
+                        <td>
+                            <select onchange="updateStatus(this)">
+                                <option value="pending" selected>Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="responded">Responded</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" class="editable">For language teaching</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-number" id="totalApps">8</div>
+                <div class="summary-label">Total Applications</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number" id="appliedCount">2</div>
+                <div class="summary-label">Applied</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number" id="pendingCount">6</div>
+                <div class="summary-label">Pending</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number" id="respondedCount">0</div>
+                <div class="summary-label">Responded</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let rowCount = 8;
+
+        function addRow() {
+            rowCount++;
+            const tableBody = document.getElementById('tableBody');
+            const newRow = tableBody.insertRow();
+            
+            newRow.innerHTML = `
+                <td>${rowCount}</td>
+                <td contenteditable="true" class="editable">Enter Platform Name</td>
+                <td contenteditable="true" class="editable">Enter Website URL</td>
+                <td contenteditable="true" class="editable">${new Date().toISOString().split('T')[0]}</td>
+                <td>
+                    <select onchange="updateStatus(this)">
+                        <option value="pending" selected>Pending</option>
+                        <option value="applied">Applied</option>
+                        <option value="responded">Responded</option>
+                    </select>
+                </td>
+                <td contenteditable="true" class="editable">Add notes here</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            updateSummary();
+        }
+
+        function deleteRow(btn) {
+            if(confirm('Are you sure you want to delete this application?')) {
+                const row = btn.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+                updateRowNumbers();
+                updateSummary();
+            }
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+            rowCount = rows.length;
+        }
+
+        function updateStatus(select) {
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let applied = 0, pending = 0, responded = 0;
+            
+            rows.forEach(row => {
+                const status = row.querySelector('select').value;
+                if(status === 'applied') applied++;
+                else if(status === 'pending') pending++;
+                else if(status === 'responded') responded++;
+            });
+            
+            document.getElementById('totalApps').textContent = rows.length;
+            document.getElementById('appliedCount').textContent = applied;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('respondedCount').textContent = responded;
+        }
+
+        function downloadExcel() {
+            const table = document.getElementById('applicationTable');
+            const wb = XLSX.utils.book_new();
+            
+            // Get data from table
+            const data = [];
+            const headers = ['No.', 'Platform Name', 'Website Link', 'Date Applied', 'Status', 'Notes'];
+            data.push(headers);
+            
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const rowData = [];
+                rowData.push(row.cells[0].textContent);
+                rowData.push(row.cells[1].textContent);
+                rowData.push(row.cells[2].textContent);
+                rowData.push(row.cells[3].textContent);
+                rowData.push(row.cells[4].querySelector('select').value);
+                rowData.push(row.cells[5].textContent);
+                data.push(rowData);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            
+            // Set column widths
+            ws['!cols'] = [
+                {wch: 5},
+                {wch: 25},
+                {wch: 30},
+                {wch: 15},
+                {wch: 12},
+                {wch: 30}
+            ];
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Applications');
+            XLSX.writeFile(wb, 'Teaching_Job_Applications_Muhammad_Sultan.xlsx');
+        }
+
+        // Initialize summary on page load
+        updateSummary();
+    </script>
+</body>
+</html>
